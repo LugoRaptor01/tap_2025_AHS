@@ -29,8 +29,10 @@ public class calculadora extends Stage {
 
         CrearKeyboard();
         txtDisplay = new TextField("0");
+        //txtDisplay.setPromptText("Teclea tu operacion:");
         txtDisplay.setEditable(false);
         txtDisplay.setAlignment(Pos.BASELINE_RIGHT);
+
         vBox = new VBox(txtDisplay, gdpKeyboard);
         vBox.setSpacing(10); //cantidad de pixeles de separacion entre botones
         vBox.setPadding(new Insets(10)); // cantidad de pixeles de separacion del margen de la ventana
@@ -53,13 +55,21 @@ public class calculadora extends Stage {
             for (int columna = 0; columna < 4; columna++) {
 
                 arBtnTeclado[renglon][columna] = new Button(strTeclas[pos]);
+
+                int finalPos = pos;
+                arBtnTeclado[renglon][columna].setOnAction(event -> EventoTeclado(strTeclas[finalPos]));
                 arBtnTeclado[renglon][columna].setPrefSize(50,50);
-                
                 gdpKeyboard.add(arBtnTeclado[renglon][columna], renglon, columna);
                 
                 pos++;
             }
         }
+    }
+
+    private void EventoTeclado(String strTecla) {
+
+        //txtDisplay.appendText(strTecla);
+
     }
 
     public calculadora(){

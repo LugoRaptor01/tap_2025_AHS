@@ -51,7 +51,7 @@ public class HelloApplication extends Application {
         stage.setTitle("Hola Mundo de Eventos ;)");
         stage.setScene(new Scene(vBox,200, 200));
         stage.show();
-        stage.setMaximized(true);
+        stage.setMaximized(false);
 
         /*
         //creacion de botones
