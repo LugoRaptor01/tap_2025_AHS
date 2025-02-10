@@ -45,13 +45,13 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
 
         crearUI();
-        vBox = new VBox();
+        //vBox = new VBox();
 
         //creacion y configuracion de la escena
         stage.setTitle("Hola Mundo de Eventos ;)");
-        stage.setScene(new Scene(vBox,200, 200));
+        stage.setScene(new Scene(vBox));
         stage.show();
-        stage.setMaximized(false);
+        stage.setMaximized(true);
 
         /*
         //creacion de botones
@@ -74,12 +74,12 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-/*
+
     void clickEvent(){
 
-        System.out.println("evento desde un metodo.");
+        //System.out.println("evento desde un metodo.");
     }
 
 
- */
+
 }
