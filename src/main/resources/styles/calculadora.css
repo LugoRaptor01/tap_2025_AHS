@@ -1,0 +1,23 @@
+.button{
+
+    -fx-background-color: #CC6666; /*color de fondo,*/
+    -fx-text-fill: white;          /*color de fuente de letras.*/
+    -fx-border-color: black;       /*color de los contornos del boton */
+    -fx-border-radius: 20;         /*formas redondeadas para lo botones */
+    -fx-background-radius: 20;
+
+    /*-fx-padding: 5, 10, 15, 60;     //margen para los botones personalizado en la hoja de estilos.*/
+
+}
+
+.button:hover{
+
+    -fx-background-color: #4a7cc9;
+}
+
+#fontButton{
+    -fx-font: bold italic "FS Sinclair";
+    -fx-background-color: #efe4e4;
+    -fx-text-fill: #FF0000;
+}
+
