@@ -13,18 +13,24 @@ import javafx.stage.Stage;
 public class calculadora extends Stage {
 
     private Scene escena;
-    
     private TextField txtDisplay;
-    
     private VBox vBox;
-    
     private GridPane gdpKeyboard; //matriz para teclado xd
-    
     private Button[][] arBtnTeclado; //arreglo de botones para evitar declarar botones individuales
-    
     String strTeclas[] = {"7", "4", "1", "0", "8", "5", "2", "/",
                           "9", "6", "3","+", ".", "*", "=", "-"};
-    
+
+    public calculadora(){
+
+        CrearUI();
+
+        this.setScene(escena); //primero mandar llamar el método de
+        // creacion de la escena y despues cargar la escena
+        this.setTitle("Calculadora");
+        this.show();
+
+    }
+
     public void CrearUI(){
 
         crearKeyboard();
@@ -84,14 +90,4 @@ public class calculadora extends Stage {
 
     }
 
-    public calculadora(){
-
-        CrearUI();
-
-        this.setScene(escena); //primero mandar llamar el método de
-                               // creacion de la escena y despues cargar la escena
-        this.setTitle("Calculadora");
-        this.show();
-
-    }
 }

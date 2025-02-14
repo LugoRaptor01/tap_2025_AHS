@@ -1,5 +1,6 @@
 package com.example.demo2;
 
+import com.example.demo2.vistas.VentasRestaurante;
 import com.example.demo2.vistas.calculadora;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -24,15 +25,19 @@ public class HelloApplication extends Application {
 
     private Menu menCompetencia1, getMenCompetencia2;
 
-    private MenuItem mitCalculadora;
+    private MenuItem mitCalculadora, mitRestaurante;
 
     void crearUI(){
 
         mitCalculadora = new MenuItem("Calculadora"); //asignacion de opciones para el menu de items
         mitCalculadora.setOnAction(event -> new calculadora());
 
+        mitRestaurante = new MenuItem("Restaurante");
+        mitRestaurante.setOnAction(event -> new VentasRestaurante());
+
+
         menCompetencia1 = new Menu("Competencia 1"); // asignacion de elementos del menu
-        menCompetencia1.getItems().addAll(mitCalculadora);
+        menCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante);
 
         mnbPrincipal = new MenuBar(); //asignacion de la barra de menu
         mnbPrincipal.getMenus().addAll(menCompetencia1);
