@@ -1,23 +1,26 @@
-.button{
+/* Fondo de la aplicación */
+.root {
+    -fx-background-color: #D3D3D3; /* Gris claro */
+}
 
-    -fx-background-color: #CC6666; /*color de fondo,*/
-    -fx-text-fill: white;          /*color de fuente de letras.*/
-    -fx-border-color: black;       /*color de los contornos del boton */
-    -fx-border-radius: 20;         /*formas redondeadas para lo botones */
-    -fx-background-radius: 20;
+.button {
+    -fx-background-color: #00FFFF; /* Azul celeste neon */
+    -fx-text-fill: black;          /* Color de fuente */
+    -fx-border-color: black;       /* Color de borde */
+    -fx-border-radius: 20;         /* Bordes redondeados */
+    -fx-background-radius: 20;     /* Bordes redondeados */
 
     /*-fx-padding: 5, 10, 15, 60;     //margen para los botones personalizado en la hoja de estilos.*/
-
 }
 
 .button:hover{
 
-    -fx-background-color: #4a7cc9;
+    -fx-background-color: #000080; /* Azul marino */
+    -fx-text-fill: white;
 }
 
 #fontButton{
-    -fx-font: bold italic "FS Sinclair";
+    -fx-font: bold italic 12 "FS Sinclair";
     -fx-background-color: #efe4e4;
     -fx-text-fill: #FF0000;
 }
-
