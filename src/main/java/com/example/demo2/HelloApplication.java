@@ -1,5 +1,7 @@
 package com.example.demo2;
 
+import com.example.demo2.modelos.Conexion;
+import com.example.demo2.vistas.ListaClientes;
 import com.example.demo2.vistas.VentasRestaurante;
 import com.example.demo2.vistas.calculadora;
 import javafx.application.Application;
@@ -25,7 +27,7 @@ public class HelloApplication extends Application {
 
     private Menu menCompetencia1, getMenCompetencia2;
 
-    private MenuItem mitCalculadora, mitRestaurante;
+    private MenuItem mitCalculadora, mitRompecabezas, mitRestaurante, mitRestauranTec;
 
     void crearUI(){
 
@@ -33,11 +35,16 @@ public class HelloApplication extends Application {
         mitCalculadora.setOnAction(event -> new calculadora());
 
         mitRestaurante = new MenuItem("Restaurante");
-        mitRestaurante.setOnAction(event -> new VentasRestaurante());
+        mitRestaurante.setOnAction(event -> new ListaClientes());
 
+        mitRompecabezas = new MenuItem("Rompecabezas");
+        //mitRompecabezas.setOnAction(event -> new Rom);
+
+        //mitRestauranTec = new MenuItem("RestauranTec");
+        //mi
 
         menCompetencia1 = new Menu("Competencia 1"); // asignacion de elementos del menu
-        menCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante);
+        menCompetencia1.getItems().addAll(mitCalculadora, mitRompecabezas, mitRestaurante);
 
         mnbPrincipal = new MenuBar(); //asignacion de la barra de menu
         mnbPrincipal.getMenus().addAll(menCompetencia1);
@@ -53,6 +60,7 @@ public class HelloApplication extends Application {
 
     public void start(Stage stage) throws IOException {
 
+        Conexion.createConnection();
         crearUI();
         //vBox = new VBox();
 

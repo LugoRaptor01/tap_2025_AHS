@@ -8,4 +8,5 @@ module com.example.demo2 {
     requires org.kordamp.bootstrapfx.core;
     requires mysql.connector.j;
     requires java.sql;
+    requires java.desktop;
 }

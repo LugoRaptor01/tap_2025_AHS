@@ -29,7 +29,7 @@ public class calculadora extends Stage {
 
     public calculadora() {
 
-        CrearUI();
+            CrearUI();
 
         this.setScene(escena);
         this.setTitle("Calculadora");
