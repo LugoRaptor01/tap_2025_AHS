@@ -107,7 +107,7 @@ public class ClientesDAO {
 
     public ObservableList<ClientesDAO> SELECT(){
 
-        String query = "SELECT * FROM clientes";
+        String query = "SELECT * FROM cliente";
         ObservableList<ClientesDAO> ListaC = FXCollections.observableArrayList();
 
         ClientesDAO objC;
@@ -123,7 +123,7 @@ public class ClientesDAO {
                 objC.setIdCte(res.getInt("idCte"));
                 objC.setNomCte(res.getString("nomCte"));
                 objC.setDireccion(res.getString("direccion"));
-                objC.setTelCte(res.getString("nomTel"));
+                objC.setTelCte(res.getString("telCte"));
                 objC.setEmailCte(res.getString("emailCte"));
 
                 ListaC.add(objC);
