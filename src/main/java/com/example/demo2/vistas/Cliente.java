@@ -56,7 +56,7 @@ public class Cliente extends Stage {
 
         vBox = new VBox(txtNombre, txtDireccion, txtTelefono, txtEmail, btnGuardar);
 
-        escena = new Scene(vBox, 120, 50);
+        escena = new Scene(vBox, 200, 125);
         // objetos requeridos: 1 vBox, 4 textFields y un button
     }
 }
