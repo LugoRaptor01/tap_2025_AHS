@@ -1,14 +1,12 @@
 package com.example.demo2.vistas;
 
 import com.example.demo2.modelos.ClientesDAO;
-import com.mysql.cj.xdevapi.Client;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,16 +31,18 @@ public class ListaClientes extends Stage {
 
     private void CrearUI (){
 
-        ImageView imv = new ImageView(getClass().getResource("/images/addIcon.png").toString());
+        tbvClientes = new TableView<>();
+
         btnAgregar = new Button();
-        //btnAgregar.setPrefSize(24, 24);
+        btnAgregar.setOnAction(event -> new Cliente(tbvClientes));
+        ImageView imv = new ImageView(getClass().getResource("/images/addIcon.png").toString());
+
+        btnAgregar.setPrefSize(24, 24);
         imv.setFitHeight(20);
         imv.setFitWidth(20);
         btnAgregar.setGraphic(imv);
 
         tblMenu = new ToolBar(btnAgregar);
-
-        tbvClientes = new TableView<>();
         CreateTable();
 
         vBox = new VBox(tblMenu, tbvClientes);
@@ -70,6 +70,4 @@ public class ListaClientes extends Stage {
         tbvClientes.setItems(objC.SELECT());
 
     }
-
-
 }

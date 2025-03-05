@@ -59,7 +59,7 @@ public class ClientesDAO {
 
     public void INSERT(){
 
-        String query = "INSERT INTO clientes(nomCte, telCte, dirección, emailCte) " +
+        String query = "INSERT INTO cliente(nomCte, telCte, direccion, emailCte) " +
                 "values ('"+ nomCte +"','"+ telCte +"','"+ direccion +"','"+ emailCte +"')";
 
         try{

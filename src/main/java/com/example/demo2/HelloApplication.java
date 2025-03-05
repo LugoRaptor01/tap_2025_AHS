@@ -2,6 +2,7 @@ package com.example.demo2;
 
 import com.example.demo2.modelos.Conexion;
 import com.example.demo2.vistas.ListaClientes;
+import com.example.demo2.vistas.Rompecabezas;
 import com.example.demo2.vistas.VentasRestaurante;
 import com.example.demo2.vistas.calculadora;
 import javafx.application.Application;
@@ -38,7 +39,7 @@ public class HelloApplication extends Application {
         mitRestaurante.setOnAction(event -> new ListaClientes());
 
         mitRompecabezas = new MenuItem("Rompecabezas");
-        //mitRompecabezas.setOnAction(event -> new Rom);
+        mitRompecabezas.setOnAction(event -> new Rompecabezas());
 
         //mitRestauranTec = new MenuItem("RestauranTec");
         //mi
@@ -91,9 +92,10 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
+    /*
     void clickEvent(){
 
         //System.out.println("evento desde un metodo.");
     }
+     */
 }
