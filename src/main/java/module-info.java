@@ -9,5 +9,6 @@ module com.example.demo2 {
     requires mysql.connector.j;
     requires java.sql;
     requires java.desktop;
+    requires com.google.protobuf;
     opens  com.example.demo2.modelos;
 }

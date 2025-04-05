@@ -1,10 +1,8 @@
 package com.example.demo2;
 
+import com.example.demo2.componentes.Hilo;
 import com.example.demo2.modelos.Conexion;
-import com.example.demo2.vistas.ListaClientes;
-import com.example.demo2.vistas.Rompecabezas;
-import com.example.demo2.vistas.VentasRestaurante;
-import com.example.demo2.vistas.calculadora;
+import com.example.demo2.vistas.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,9 +24,9 @@ public class HelloApplication extends Application {
 
     private MenuBar mnbPrincipal;
 
-    private Menu menCompetencia1, getMenCompetencia2;
+    private Menu menCompetencia1, menCompetencia2;
 
-    private MenuItem mitCalculadora, mitRompecabezas, mitRestaurante, mitRestauranTec;
+    private MenuItem mitCalculadora, mitRompecabezas, mitRestaurante, mitRestauranTec, mitHilos;
 
     void crearUI(){
 
@@ -41,14 +39,20 @@ public class HelloApplication extends Application {
         mitRompecabezas = new MenuItem("Rompecabezas");
         mitRompecabezas.setOnAction(event -> new Rompecabezas());
 
+        mitHilos = new MenuItem("Carrera de Buses!!!");
+        mitHilos.setOnAction(event -> new Celayork());
+
         //mitRestauranTec = new MenuItem("RestauranTec");
         //mi
 
         menCompetencia1 = new Menu("Competencia 1"); // asignacion de elementos del menu
         menCompetencia1.getItems().addAll(mitCalculadora, mitRompecabezas, mitRestaurante);
 
+        menCompetencia2 = new Menu("Competencia 2");
+        menCompetencia2.getItems().addAll(mitHilos);
+
         mnbPrincipal = new MenuBar(); //asignacion de la barra de menu
-        mnbPrincipal.getMenus().addAll(menCompetencia1);
+        mnbPrincipal.getMenus().addAll(menCompetencia1, menCompetencia2);
 
         vBox = new VBox(mnbPrincipal);
 
@@ -60,6 +64,13 @@ public class HelloApplication extends Application {
     @Override
 
     public void start(Stage stage) throws IOException {
+        /*
+        new Hilo ("Ruta Pinos 60").start();
+        new Hilo ("Ruta Laureles 26").start();
+        new Hilo ("Ruta Delicias 40").start();
+        new Hilo ("Ruta Puente 10").start();
+        new Hilo("Ruta Laja 13").start();
+        */
 
         Conexion.createConnection();
         crearUI();

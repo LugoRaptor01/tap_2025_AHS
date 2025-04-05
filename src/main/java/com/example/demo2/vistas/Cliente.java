@@ -17,12 +17,28 @@ public class Cliente extends Stage {
     private Scene escena;
     private TableView<ClientesDAO> tbvClientes;
 
-    public Cliente(TableView<ClientesDAO> tbvCte){
+    public Cliente(TableView<ClientesDAO> tbvCte, ClientesDAO obj){
 
         this.tbvClientes = tbvCte;
-        objC = new ClientesDAO();
 
         CrearUI();
+
+        if(obj == null){
+
+            new ClientesDAO();
+
+        } else {
+
+            objC = obj;
+
+            txtNombre.setText(objC.getNomCte());
+            txtDireccion.setText(objC.getDireccion());
+            txtTelefono.setText(objC.getTelCte());
+            txtEmail.setText(objC.getEmailCte());
+        }
+
+        //objC = obj == null ?  new ClientesDAO() : obj;
+
         this.setTitle("Registro de Cliente");
         this.setScene(escena);
         this.show();
@@ -45,12 +61,19 @@ public class Cliente extends Stage {
             objC.setTelCte(txtTelefono.getText());
             objC.setEmailCte(txtEmail.getText());
 
-            objC.INSERT();
+            if (objC.getIdCte() > 0){
 
-            tbvClientes.setItems(objC.SELECT());
-            tbvClientes.refresh();
+                objC.UPDATE();
 
-            this.close();
+            } else {
+
+                objC.INSERT();
+
+                tbvClientes.setItems(objC.SELECT());
+                tbvClientes.refresh();
+
+                this.close();
+            }
 
         });
 

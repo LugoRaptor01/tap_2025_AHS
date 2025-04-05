@@ -1,6 +1,7 @@
 package com.example.demo2.componentes;
 
 import com.example.demo2.modelos.ClientesDAO;
+import com.example.demo2.vistas.Cliente;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -23,8 +24,10 @@ public class ButtonCell extends TableCell<ClientesDAO, String> {
         btnCelda.setOnAction(event -> {
 
             ClientesDAO objC  = this.getTableView().getItems().get(this.getIndex());
+
             if (strLabelBtn.equals("Editar")) {
 
+                new Cliente(this.getTableView(), objC);
 
             } else {
 

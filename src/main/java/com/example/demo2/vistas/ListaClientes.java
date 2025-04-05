@@ -34,7 +34,7 @@ public class ListaClientes extends Stage {
         tbvClientes = new TableView<>();
 
         btnAgregar = new Button();
-        btnAgregar.setOnAction(event -> new Cliente(tbvClientes));
+        btnAgregar.setOnAction(event -> new Cliente(tbvClientes, null));
         ImageView imv = new ImageView(getClass().getResource("/images/addIcon.png").toString());
 
         btnAgregar.setPrefSize(24, 24);
@@ -57,11 +57,11 @@ public class ListaClientes extends Stage {
         TableColumn<ClientesDAO, String> tbcNomCte = new TableColumn<>("Nombre");
         tbcNomCte.setCellValueFactory(new PropertyValueFactory<>("nomCte"));
 
-        TableColumn<ClientesDAO, String> tbcDireccion = new TableColumn<>("Dirección");
-        tbcDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
-
         TableColumn<ClientesDAO, String> tbcTelCte = new TableColumn<>("Teléfono");
         tbcTelCte.setCellValueFactory(new PropertyValueFactory<>("telCte"));
+
+        TableColumn<ClientesDAO, String> tbcDireccion = new TableColumn<>("Dirección");
+        tbcDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 
         TableColumn<ClientesDAO, String> tbcEmailCte = new TableColumn<>("Email");
         tbcEmailCte.setCellValueFactory(new PropertyValueFactory<>("emailCte"));
