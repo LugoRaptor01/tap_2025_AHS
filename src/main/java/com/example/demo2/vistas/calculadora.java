@@ -19,13 +19,12 @@ public class calculadora extends Stage {
 
     private String operador = "";
     private double operando1 = 0;
-    //private double operando2 = 0;
-    //private double resultado;
-    //private int contOperador = 0;
     private boolean banInicio = true;
 
-    private String[] strTeclas = {"7", "4", "1", "0", "8", "5", "2", ".",
-                                                     "9", "6", "3", "=", "/", "*", "-", "+"};
+    private String[] strTeclas = {
+            "7", "4", "1", "0", "8", "5", "2", ".",
+            "9", "6", "3", "=", "/", "*", "-", "+"
+    };
 
     public calculadora() {
 
@@ -48,8 +47,7 @@ public class calculadora extends Stage {
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10));
 
-        escena = new Scene(vBox, 200, 250);
-
+        escena = new Scene(vBox, 250, 250);
         escena.getStylesheets().add(getClass().getResource("/styles/calculadora.css").toExternalForm());
     }
 
@@ -69,23 +67,24 @@ public class calculadora extends Stage {
 
                 String tecla = strTeclas[pos];
 
-                arBtnTeclado[renglon][columna] = new Button(tecla);
-                arBtnTeclado[renglon][columna].setPrefSize(50, 50);
-                arBtnTeclado[renglon][columna].setOnAction(event -> EventoTeclado(tecla));
+                Button btn = new Button(tecla);
+                btn.setPrefSize(50, 50);
+                btn.setOnAction(event -> EventoTeclado(tecla));
 
-                gdpKeyboard.add(arBtnTeclado[renglon][columna], renglon, columna);
+                arBtnTeclado[renglon][columna] = btn;
+                gdpKeyboard.add(btn, renglon, columna);
                 pos++;
+
             }
         }
     }
 
     private void EventoTeclado(String strTecla) {
 
-        if (txtDisplay.getText().startsWith("Error")) { //detecta si hay un error actualmente en el display y se borra
-                                                                                      //presionando cualquier tecla
+        if (esErrorEnDisplay()) {
             txtDisplay.setText("0.0");
+            txtDisplay.setAlignment(Pos.BASELINE_RIGHT); // Volver a alinear a la derecha
             operador = "";
-
             banInicio = true;
         }
 
@@ -100,134 +99,102 @@ public class calculadora extends Stage {
 
                 txtDisplay.appendText(strTecla);
             }
-        } else if (strTecla.equals(".")) { // error para cuando hay más de 2 puntos por operando-
 
-            if (txtDisplay.getText().contains(".") && !banInicio) {
+        } else if (strTecla.equals(".")) {
 
-                txtDisplay.setText("Error: número inválido");
+            String textoActual = txtDisplay.getText();
+
+            if (banInicio) {
+
+                txtDisplay.setText("0.");
+                banInicio = false;
+                return;
+            }
+
+            if (textoActual.contains(".")) {
+
+                mostrarError("Error: num inválido. Presiona =.");
                 return;
             }
 
             txtDisplay.appendText(".");
-            banInicio = false;
 
         } else if (strTecla.matches("[-+*/]")) {
 
-            if (!operador.isEmpty()) { //error por si hay dos operadores al mismo tiempo.
+            if (!operador.isEmpty()) {
 
-                txtDisplay.setText("Error: formato inválido");
+                mostrarError("Error: formato inválido. Presiona =.");
                 return;
+            }
 
+            String textoActual = txtDisplay.getText();
+
+            if (!esNumeroValido(textoActual)) {
+
+                mostrarError("Error: num inválido. Presiona =..");
+                return;
             }
 
             operador = strTecla;
+            operando1 = Double.parseDouble(textoActual);
 
-            operando1 = Double.parseDouble(txtDisplay.getText());
-
-            banInicio = true; // Permite escribir el siguiente número desde cero
-
-        } else if (strTecla.equals("=")) {
-
-            if (operador.isEmpty()){
-
-                return; // Si no hay operador, no hacer nada
-            }
-
-            double operando2 = Double.parseDouble(txtDisplay.getText());
-            double resultado = realizarOperacion(operando1, operando2, operador);
-
-            if (Double.isNaN(resultado)) { //división entre 0.
-
-                txtDisplay.setText("Error: división por 0");
-
-            } else {
-
-                txtDisplay.setText(String.valueOf(resultado));
-                operando1 = resultado; // Guarda el resultado para otras operaciones
-            }
-
-            operador = ""; // resetea el operador
             banInicio = true;
-        }
-        /*if (strTecla.matches("[0-9.]")) {
-
-            if (banInicio) {
-
-                txtDisplay.setText(strTecla);
-                banInicio = false;
-
-            } else {
-
-                txtDisplay.appendText(strTecla);
-            }
-
-        } else if (strTecla.matches("[-+/*]")) {
-
-            //txtDisplay.appendText(strTecla);
-            contOperador++;
-
-            if (strTecla.equals("/")){
-
-
-            }
-
-            if (contOperador > 1){
-
-                txtDisplay.setText("Error 1.");
-                contOperador = 0;
-
-            } else {
-
-                operador = strTecla;
-                operando1 = Double.parseDouble(txtDisplay.getText());
-                banbanInicio = true;
-
-            }
 
         } else if (strTecla.equals("=")) {
 
-            operando2 = Double.parseDouble(txtDisplay.getText());
-            resultado = realizarOperacion(operando1, operando2, operador);
-            contOperador--;
+            if (operador.isEmpty()) {
 
-            if (Double.isNaN(resultado)) {
                 return;
             }
 
-            txtDisplay.setText(String.valueOf(resultado));
-            //txtDisplay.setText("0.0");
-            banInicio = true;
+            String textoActual = txtDisplay.getText();
 
-        }*/
+            if (!esNumeroValido(textoActual)) {
+                mostrarError("Error: num inválido. Presiona =.");
+                return;
+            }
+
+            double operando2 = Double.parseDouble(textoActual);
+            double resultado = realizarOperacion(operando1, operando2, operador);
+
+            if (Double.isNaN(resultado)) {
+                // Error ya mostrado dentro de realizarOperacion
+            } else {
+
+                txtDisplay.setText(String.valueOf(resultado));
+                operando1 = resultado;
+            }
+
+            operador = "";
+            banInicio = true;
+        }
     }
 
     private double realizarOperacion(double operando1, double operando2, String operador) {
 
-        double  resultado = 0.0;
+        double resultado = 0.0;
 
         switch (operador) {
 
             case "+":
-
-                    //contOperador++;
-                    resultado = operando1 + operando2;
-                    //contOperador--;
+                resultado = operando1 + operando2;
                 break;
+
             case "-":
 
-                //contOperador++;
                 resultado = operando1 - operando2;
                 break;
+
             case "*":
 
-                //contOperador++;
                 resultado = operando1 * operando2;
                 break;
+
             case "/":
 
                 if (operando2 == 0) {
 
-                    txtDisplay.setText("Error: División por 0");
+                    mostrarError("Error: div 0. Presiona =.");
                     return Double.NaN;
 
                 } else {
@@ -238,6 +205,25 @@ public class calculadora extends Stage {
                 break;
         }
 
-        return  resultado;
+        return resultado;
+    }
+
+    private boolean esNumeroValido(String texto) {
+
+        return texto.matches("-?\\d*(\\.\\d+)?");
+    }
+
+    private boolean esErrorEnDisplay() {
+
+        return txtDisplay.getText().startsWith("Error");
+    }
+
+    private void mostrarError(String mensaje) {
+
+        txtDisplay.setAlignment(Pos.BASELINE_LEFT); // Mostrar el error desde la izquierda
+        txtDisplay.setText(mensaje);
+
+        operador = "";
+        banInicio = true;
     }
 }
