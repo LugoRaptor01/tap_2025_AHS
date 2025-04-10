@@ -55,8 +55,7 @@ public class ButtonCell extends TableCell<ClientesDAO, String> {
         if (!empty){
 
             this.setGraphic(btnCelda);
-
-
+            
         }
     }
 }
