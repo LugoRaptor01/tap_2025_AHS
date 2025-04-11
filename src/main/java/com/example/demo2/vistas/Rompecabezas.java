@@ -142,7 +142,7 @@ public class Rompecabezas extends Stage {
         altoPieza = maxAltoGrid / filas;
     }
 
-    // Reemplaza el método cargarRompecabezas con esta nueva versión
+    // Reemplaza el metodo cargarRompecabezas con esta nueva versión
     private void cargarRompecabezas() {
         piezas.clear();
         piezasOrdenadas.clear();
@@ -241,7 +241,8 @@ public class Rompecabezas extends Stage {
 
     private StackPane crearCelda() {
         StackPane celda = new StackPane();
-        celda.setStyle("-fx-border-color: #cccccc; -fx-border-width: 0.5px;");
+        celda.setStyle("-fx-background-color: #2b2b2b; -fx-border-color: #444; -fx-border-width: 1;");
+
         celda.setMinSize(anchoPieza, altoPieza);
         celda.setPrefSize(anchoPieza, altoPieza);
 
