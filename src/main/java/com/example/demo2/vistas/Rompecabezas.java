@@ -16,7 +16,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -39,6 +42,7 @@ public class Rompecabezas extends Stage {
     private List<ImageView> piezasOrdenadas = new ArrayList<>();
 
     private int filas, columnas;
+    private int intentos = 1    ;
     private long tiempoInicio;
 
     private double anchoPieza = 150;
@@ -57,6 +61,46 @@ public class Rompecabezas extends Stage {
 
     private boolean juegoEnCurso = false;
 
+    String desktopPath = System.getProperty("user.home") + "/Escritorio";
+
+    private void registrarResultado(String nombre, long tiempo) {
+        intentos++;
+
+        String linea = "Intento " + intentos + " - Tiempo: " + tiempo + "s - Rompecabezas: " + nombre + "\n";
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resultados.txt", true))) {
+            writer.write(linea);
+        } catch (IOException e) {
+            System.err.println("Error al escribir el archivo: " + e.getMessage());
+        }
+    }
+
+    public void guardarResultadoEnArchivo(String nombreRompecabezas, String resultado, long tiempoEnMilisegundos) {
+        try {
+            // Obtener ruta al escritorio
+            String desktopPath = "C:\\Users\\Alessandro Hernández\\Desktop";
+
+            // Crear carpeta "registros" si no existe
+            File folder = new File(desktopPath + "/registros");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            // Ruta completa al archivo
+            File archivo = new File(folder, "resultados.txt");
+
+            // Escribir en el archivo
+            FileWriter writer = new FileWriter(archivo, true);
+            writer.write("Intento #" + intentos  + " - Tiempo: " + tiempoEnMilisegundos + " s - Rompecabezas: " + nombreRompecabezas + " - Resultado: " + resultado +  "\n");
+            writer.close();
+
+            System.out.println("Resultado guardado en: " + archivo.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     // Mapeo de nombres visibles -> rutas reales y tamaños
     private final Map<String, String> rutaImagenes = Map.of(
 
@@ -72,7 +116,7 @@ public class Rompecabezas extends Stage {
             "FordGTLM5x8", new int[]{5, 8}
     );
 
-    private String imagenSeleccionada;
+    private String imagenSeleccionada, resultado;
 
     public Rompecabezas() {
         CrearUI();
@@ -89,7 +133,7 @@ public class Rompecabezas extends Stage {
         btnTerminar = new Button("Terminar");
         lblTiempo = new Label("Tiempo: 0s");
 
-        botones = new HBox(10, btnTamano, btnMezclar, btnEmpezar, btnTerminar, lblTiempo);
+        botones = new HBox(10, btnTamano, btnEmpezar, btnTerminar, lblTiempo);
         botones.setPadding(new Insets(10));
         botones.setAlignment(Pos.CENTER);
 
@@ -105,8 +149,11 @@ public class Rompecabezas extends Stage {
         escena = new Scene(root, 1200, 800);
 
         btnTamano.setOnAction(e -> mostrarSelectorImagenes());
-        btnMezclar.setOnAction(e -> mezclarPiezas());
-        btnEmpezar.setOnAction(e -> iniciarTemporizador());
+        //btnMezclar.setOnAction(e -> mezclarPiezas());
+        btnEmpezar.setOnAction(e -> {
+            mezclarPiezas();
+            iniciarTemporizador();
+        });
         btnTerminar.setOnAction(e -> terminarJuego());
     }
 
@@ -142,7 +189,6 @@ public class Rompecabezas extends Stage {
         altoPieza = maxAltoGrid / filas;
     }
 
-    // Reemplaza el metodo cargarRompecabezas con esta nueva versión
     private void cargarRompecabezas() {
         piezas.clear();
         piezasOrdenadas.clear();
@@ -320,7 +366,6 @@ public class Rompecabezas extends Stage {
     private void verificarGanador() {
         boolean ganado = true;
 
-        // Verificar posición correcta de cada pieza
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
                 Node node = getNodeByRowColumnIndex(fila, col, grid);
@@ -335,23 +380,20 @@ public class Rompecabezas extends Stage {
                     break;
                 }
 
-                // Obtener la pieza que debería estar en esta posición
-                int posicionCorrecta = fila * columnas + col;
-                Image imagenCorrecta = piezasOrdenadas.get(posicionCorrecta).getImage();
+                ImageView imagenEnCelda = (ImageView) celda.getChildren().get(0);
+                Image imagenCorrecta = piezasOrdenadas.get(fila * columnas + col).getImage();
 
-                ImageView piezaActual = (ImageView) celda.getChildren().get(0);
-                if (!piezaActual.getImage().equals(imagenCorrecta)) {
+                if (imagenEnCelda.getImage() != imagenCorrecta) {
                     ganado = false;
                     break;
                 }
             }
-            if (!ganado) break;
         }
 
         if (ganado) {
-            terminarJuego(true);
-            // Resaltar el grid para confirmar
-            grid.setStyle("-fx-border-color: green; -fx-border-width: 3px;");
+            juegoEnCurso = false;
+            if (temporizador != null) temporizador.stop();
+            mostrarAlerta("¡Felicidades!", "Has completado el rompecabezas correctamente.");
         }
     }
 
@@ -376,6 +418,7 @@ public class Rompecabezas extends Stage {
     }
 
     private void terminarJuego(boolean esGanador) {
+
         if (temporizador != null) {
             temporizador.stop();
         }
@@ -390,10 +433,13 @@ public class Rompecabezas extends Stage {
 
         if (esGanador) {
             mostrarAlerta("¡Felicidades!", "¡Completaste el rompecabezas en " + tiempoTotal + " segundos!");
+            resultado = "Resuelto correctamente.";
         } else {
             boolean completado = verificarCompletado();
             if (completado) {
-                mostrarAlerta("Resultado", "¡Completaste el rompecabezas en " + tiempoTotal + " segundos!");
+                mostrarAlerta("Resultado", "¡Completaste el rompecabezas en " + tiempoTotal + " segundos, pero no está armado correctamente :/!");
+                resultado = "Completado con errores.";
+
             } else {
                 int piezasColocadas = contarPiezasColocadas();
                 mostrarAlerta("Resultado",
@@ -401,19 +447,24 @@ public class Rompecabezas extends Stage {
                                 "Tiempo: " + tiempoTotal + " segundos\n" +
                                 "Piezas colocadas: " + piezasColocadas + " de " + (filas * columnas) + "\n" +
                                 "Porcentaje completado: " + (piezasColocadas * 100 / (filas * columnas)) + "%");
+                resultado = "Incompleto.";
             }
         }
+
+        juegoEnCurso = false;
+        tiempoTotal = (System.currentTimeMillis() - tiempoInicio) / 1000;
+        guardarResultadoEnArchivo(imagenSeleccionada, resultado,tiempoTotal);
     }
 
     private boolean verificarCompletado() {
-        int index = 0;
+        int i = 0;
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
                 Node node = getNodeByRowColumnIndex(fila, col, grid);
                 if (!(node instanceof StackPane) || ((StackPane)node).getChildren().isEmpty()) {
                     return false;
                 }
-                index++;
+                i++;
             }
         }
         return true;
@@ -429,9 +480,10 @@ public class Rompecabezas extends Stage {
         return count;
     }
 
-    private Node getNodeByRowColumnIndex(int row, int column, GridPane gridPane) {
+    private Node getNodeByRowColumnIndex(final int fila, final int columna, GridPane gridPane) {
         for (Node node : gridPane.getChildren()) {
-            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+            if (GridPane.getRowIndex(node) != null && GridPane.getColumnIndex(node) != null &&
+                    GridPane.getRowIndex(node) == fila && GridPane.getColumnIndex(node) == columna) {
                 return node;
             }
         }
