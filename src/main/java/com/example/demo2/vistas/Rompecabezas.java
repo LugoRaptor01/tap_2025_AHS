@@ -16,7 +16,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class Rompecabezas extends Stage {
     private Scene escena;
 
     private Button btnTamano;
-    private Button btnMezclar;
+    //private Button btnMezclar;
 
     private VBox root;
     private VBox contenedorPiezas = new VBox(10);
@@ -42,7 +41,7 @@ public class Rompecabezas extends Stage {
     private List<ImageView> piezasOrdenadas = new ArrayList<>();
 
     private int filas, columnas;
-    private int intentos = 1    ;
+    private int intentos = 0;
     private long tiempoInicio;
 
     private double anchoPieza = 150;
@@ -61,21 +60,8 @@ public class Rompecabezas extends Stage {
 
     private boolean juegoEnCurso = false;
 
-    String desktopPath = System.getProperty("user.home") + "/Escritorio";
-
-    private void registrarResultado(String nombre, long tiempo) {
-        intentos++;
-
-        String linea = "Intento " + intentos + " - Tiempo: " + tiempo + "s - Rompecabezas: " + nombre + "\n";
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resultados.txt", true))) {
-            writer.write(linea);
-        } catch (IOException e) {
-            System.err.println("Error al escribir el archivo: " + e.getMessage());
-        }
-    }
-
     public void guardarResultadoEnArchivo(String nombreRompecabezas, String resultado, long tiempoEnMilisegundos) {
+        intentos++;
         try {
             // Obtener ruta al escritorio
             String desktopPath = "C:\\Users\\Alessandro Hernández\\Desktop";
@@ -119,6 +105,7 @@ public class Rompecabezas extends Stage {
     private String imagenSeleccionada, resultado;
 
     public Rompecabezas() {
+
         CrearUI();
         this.setTitle("Rompecabezas");
         this.setScene(escena);
@@ -127,7 +114,7 @@ public class Rompecabezas extends Stage {
     }
 
     private void CrearUI() {
-        btnMezclar = new Button("Mezclar");
+        //btnMezclar = new Button("Mezclar");
         btnTamano = new Button("Tamaño");
         btnEmpezar = new Button("Empezar");
         btnTerminar = new Button("Terminar");
@@ -152,19 +139,23 @@ public class Rompecabezas extends Stage {
         //btnMezclar.setOnAction(e -> mezclarPiezas());
         btnEmpezar.setOnAction(e -> {
             mezclarPiezas();
-            iniciarTemporizador();
+            inicializarTemporizador();
         });
         btnTerminar.setOnAction(e -> terminarJuego());
     }
 
     private void mostrarSelectorImagenes() {
+
         List<String> opciones = new ArrayList<>(rutaImagenes.keySet());
+
         ChoiceDialog<String> dialog = new ChoiceDialog<>(opciones.get(0), opciones);
+
         dialog.setTitle("Seleccionar imagen");
         dialog.setHeaderText("Elige una imagen para el rompecabezas");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(nombre -> {
+
             imagenSeleccionada = nombre;
             int[] tam = tamanos.get(nombre);
             filas = tam[0];
@@ -172,9 +163,11 @@ public class Rompecabezas extends Stage {
             calcularTamanoCelda();
 
             if (temporizador != null) {
+
                 temporizador.stop();
                 temporizador = null;
             }
+
             lblTiempo.setText("Tiempo: 0s");
 
             cargarRompecabezas();
@@ -182,7 +175,8 @@ public class Rompecabezas extends Stage {
     }
 
     private void calcularTamanoCelda() {
-        double maxAnchoGrid = 800; // ajusta si quieres más pequeño
+
+        double maxAnchoGrid = 800;
         double maxAltoGrid = 600;
 
         anchoPieza = maxAnchoGrid / columnas;
@@ -190,6 +184,7 @@ public class Rompecabezas extends Stage {
     }
 
     private void cargarRompecabezas() {
+
         piezas.clear();
         piezasOrdenadas.clear();
         contenedorPuzzle.getChildren().clear();
@@ -206,7 +201,9 @@ public class Rompecabezas extends Stage {
 
         String pathReferencia = "/" + rutaImagenes.get(imagenSeleccionada) + "/completa.jpg";
         URL urlReferencia = getClass().getResource(pathReferencia);
+
         if (urlReferencia != null) {
+
             Image imgRef = new Image(urlReferencia.toExternalForm());
             imagenReferencia = new ImageView(imgRef);
             imagenReferencia.setPreserveRatio(true);
@@ -260,6 +257,7 @@ public class Rompecabezas extends Stage {
 
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
+
                 StackPane celda = crearCelda();
                 grid.add(celda, col, fila);
             }
@@ -269,15 +267,18 @@ public class Rompecabezas extends Stage {
         contenedorPiezas.getChildren().clear();
 
         for (ImageView pieza : piezas) {
+
             ImageView imgView = new ImageView(pieza.getImage());
             imgView.setFitWidth(anchoPieza);
             imgView.setFitHeight(altoPieza);
             imgView.setPreserveRatio(false);
+
             configurarArrastrar(imgView);
             contenedorPiezas.getChildren().add(imgView);
         }
 
         HBox panelJuego = new HBox(20);
+
         panelJuego.setAlignment(Pos.CENTER);
         panelJuego.getChildren().addAll(scrollPiezas, grid);
 
@@ -286,6 +287,7 @@ public class Rompecabezas extends Stage {
 
 
     private StackPane crearCelda() {
+
         StackPane celda = new StackPane();
         celda.setStyle("-fx-background-color: #2b2b2b; -fx-border-color: #444; -fx-border-width: 1;");
 
@@ -293,17 +295,23 @@ public class Rompecabezas extends Stage {
         celda.setPrefSize(anchoPieza, altoPieza);
 
         celda.setOnDragOver(event -> {
+
             if (event.getGestureSource() != celda && event.getDragboard().hasImage()) {
+
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
 
         celda.setOnDragDropped(event -> {
+
             Dragboard db = event.getDragboard();
+
             if (db.hasImage() && celda.getChildren().isEmpty()) {
+
                 ImageView source = (ImageView) event.getGestureSource();
                 ImageView nueva = new ImageView(db.getImage());
+
                 nueva.setFitWidth(anchoPieza);
                 nueva.setFitHeight(altoPieza);
                 nueva.setPreserveRatio(false);
@@ -315,6 +323,7 @@ public class Rompecabezas extends Stage {
 
                 event.setDropCompleted(true);
             } else {
+
                 event.setDropCompleted(false);
             }
             event.consume();
@@ -324,25 +333,33 @@ public class Rompecabezas extends Stage {
     }
 
     private void configurarArrastrar(ImageView imgView) {
+
         imgView.setOnDragDetected(event -> {
+
             Dragboard db = imgView.startDragAndDrop(TransferMode.MOVE);
+
             ClipboardContent content = new ClipboardContent();
             content.putImage(imgView.getImage());
             db.setContent(content);
             db.setDragView(imgView.getImage());
+
             event.consume();
         });
     }
 
     private void mezclarPiezas() {
+
         if (piezas.isEmpty()) {
+
             mostrarAlerta("Error", "Selecciona primero una imagen.");
             return;
         }
 
         grid.getChildren().clear();
+
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
+
                 StackPane celda = crearCelda();
                 grid.add(celda, col, fila);
             }
@@ -352,11 +369,14 @@ public class Rompecabezas extends Stage {
         contenedorPiezas.getChildren().clear();
 
         for (ImageView pieza : piezas) {
+
             ImageView imgView = new ImageView(pieza.getImage());
+
             imgView.setFitWidth(anchoPieza);
             imgView.setFitHeight(altoPieza);
             imgView.setPreserveRatio(false);
             configurarArrastrar(imgView);
+
             contenedorPiezas.getChildren().add(imgView);
         }
 
@@ -391,24 +411,30 @@ public class Rompecabezas extends Stage {
         }
 
         if (ganado) {
+
             juegoEnCurso = false;
             if (temporizador != null) temporizador.stop();
+
             mostrarAlerta("¡Felicidades!", "Has completado el rompecabezas correctamente.");
         }
     }
 
-    private void iniciarTemporizador() {
+    private void inicializarTemporizador() {
+
         if (!juegoEnCurso) {
+
             mostrarAlerta("Aviso", "Primero debes mezclar las piezas para comenzar el juego.");
             return;
         }
 
         tiempoInicio = System.currentTimeMillis();
         temporizador = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+
             long ahora = System.currentTimeMillis();
             long segundos = (ahora - tiempoInicio) / 1000;
             lblTiempo.setText("Tiempo: " + segundos + "s");
         }));
+
         temporizador.setCycleCount(Timeline.INDEFINITE);
         temporizador.play();
     }
@@ -432,15 +458,19 @@ public class Rompecabezas extends Stage {
         long tiempoTotal = (System.currentTimeMillis() - tiempoInicio) / 1000;
 
         if (esGanador) {
+
             mostrarAlerta("¡Felicidades!", "¡Completaste el rompecabezas en " + tiempoTotal + " segundos!");
             resultado = "Resuelto correctamente.";
+
         } else {
+
             boolean completado = verificarCompletado();
             if (completado) {
                 mostrarAlerta("Resultado", "¡Completaste el rompecabezas en " + tiempoTotal + " segundos, pero no está armado correctamente :/!");
                 resultado = "Completado con errores.";
 
             } else {
+
                 int piezasColocadas = contarPiezasColocadas();
                 mostrarAlerta("Resultado",
                         "Juego terminado.\n" +
@@ -452,14 +482,18 @@ public class Rompecabezas extends Stage {
         }
 
         juegoEnCurso = false;
+
         tiempoTotal = (System.currentTimeMillis() - tiempoInicio) / 1000;
         guardarResultadoEnArchivo(imagenSeleccionada, resultado,tiempoTotal);
     }
 
     private boolean verificarCompletado() {
+
         int i = 0;
+
         for (int fila = 0; fila < filas; fila++) {
             for (int col = 0; col < columnas; col++) {
+
                 Node node = getNodeByRowColumnIndex(fila, col, grid);
                 if (!(node instanceof StackPane) || ((StackPane)node).getChildren().isEmpty()) {
                     return false;
@@ -471,30 +505,40 @@ public class Rompecabezas extends Stage {
     }
 
     private int contarPiezasColocadas() {
+
         int count = 0;
         for (Node node : grid.getChildren()) {
+
             if (node instanceof StackPane && !((StackPane)node).getChildren().isEmpty()) {
                 count++;
             }
         }
+
         return count;
     }
 
     private Node getNodeByRowColumnIndex(final int fila, final int columna, GridPane gridPane) {
+
         for (Node node : gridPane.getChildren()) {
+
             if (GridPane.getRowIndex(node) != null && GridPane.getColumnIndex(node) != null &&
                     GridPane.getRowIndex(node) == fila && GridPane.getColumnIndex(node) == columna) {
+
                 return node;
             }
         }
+
         return null;
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
         alert.setTitle(titulo);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
+
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.showAndWait();
     }
